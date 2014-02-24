@@ -1,1 +1,1 @@
-bugBusters: Tools to track bugs, and verify fixes.
+bugBusters: Tools to track specific bugs in Couchbase, and verify fixes.
