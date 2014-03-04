@@ -33,6 +33,7 @@ public class Fetcher {
             System.out.println("-----------------------------------------------------------------------");
         }
 
+        client.shutdown();
         System.exit(0);
 
     }
