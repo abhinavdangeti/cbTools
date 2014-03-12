@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,22 +17,35 @@ import com.couchbase.client.MetaData;
 
 public class Fetcher {
 
-    private static String _node1 = "127.0.0.1";
-    private static int _port1 = 9000;
+    private static String _node = "127.0.0.1";
+    private static int _port = 9000;
     private static String _bkt = "default";
     private static String _pass = "";
     private static String _key = "key_0";
-    private static boolean printVal = false;
+    private static boolean _printVal = false;
 
     public static void main(String args[]) throws URISyntaxException, IOException, InterruptedException, ExecutionException {
-        CouchbaseMetaClient client = connect(_node1, _port1);
+
+        try {
+            File file = new File("test.properties");
+            FileInputStream fileInput = new FileInputStream(file);
+            Properties properties = new Properties();
+            properties.load(fileInput);
+            fileInput.close();
+
+            parse_input(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        CouchbaseMetaClient client = connect(_node, _port);
         OperationFuture<MetaData> retm = client.getReturnMeta(_key);;
         String value = client.get(_key).toString();
 
         System.out.println("-----------------------------------------------------------------------");
         System.out.println("KEY: " + _key + "\nMETADATA: " + retm.get().toString() + "\nDATASIZE: " + value.length());
         System.out.println("-----------------------------------------------------------------------");
-        if (printVal) {
+        if (_printVal) {
             System.out.println("DATA: " + value);
             System.out.println("-----------------------------------------------------------------------");
         }
@@ -49,6 +66,28 @@ public class Fetcher {
             System.exit(0);
         }
         return null;
+    }
+
+    private static void parse_input(Properties properties) {
+        /*
+         * Read test variables from test.properties file
+         */
+        Enumeration<Object> enuKeys = properties.keys();
+        while(enuKeys.hasMoreElements()){
+            String key = (String) enuKeys.nextElement();
+            if (key.equals("node"))
+                _node = properties.getProperty(key);
+            if (key.equals("port"))
+                _port = (Integer.parseInt(properties.getProperty(key)));
+            if (key.equals("bucket-name"))
+                _bkt = properties.getProperty(key);
+            if (key.equals("bucket-password"))
+                _pass = properties.getProperty(key);
+            if (key.equals("key"))
+                _key = properties.getProperty(key);
+            if (key.equals("doPrintValue"))
+                _printVal = (Boolean.parseBoolean(properties.getProperty(key)));
+        }
     }
 }
 
