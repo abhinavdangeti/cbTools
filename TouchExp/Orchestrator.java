@@ -96,16 +96,18 @@ public class Orchestrator {
         Map<String, String> map1 = map.get(key);
         Iterator<String> tt = map1.keySet().iterator();
         //System.out.println(key.toString());
+        float resident_ratio = 100;
         while (tt.hasNext()) {
             String val1 = tt.next();
             if ((val1.toString().equals(parameter))) {
                 String val2 = map1.get(val1);
                 //System.out.println(val1.toString() + "  " + val2.toString());
-                return Float.parseFloat(val2.toString());
+                resident_ratio = Float.parseFloat(val2.toString());
             }
         }
 
-        throw new RuntimeException("Unable to find the stat '" + parameter + "'!\n");
+        //throw new RuntimeException("Unable to find the stat '" + parameter + "'!\n");
+        return resident_ratio;
 
     }
 
