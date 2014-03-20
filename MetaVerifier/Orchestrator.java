@@ -1,13 +1,16 @@
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -25,36 +28,53 @@ public class Orchestrator {
     private static int _port2 = 9001;
     private static String _bkt = "default";
     private static String _pass = "";
-    private static int _itemCnt = 10000;
+    private static int _start = 0;
+    private static int _end = 10000;
     private static String _prefix = "";
-    private static Boolean writetofile = false;
+    private static Boolean _writetofile = false;
 
     public static HashMap<String, String> n1 = new HashMap<String,String>();
     public static HashMap<String, String> n2 = new HashMap<String,String>();
 
     public static void main(String args[]) throws URISyntaxException, IOException, InterruptedException, ExecutionException {
+
+        try {
+            File file = new File("test.properties");
+            FileInputStream fileInput = new FileInputStream(file);
+            Properties properties = new Properties();
+            properties.load(fileInput);
+            fileInput.close();
+
+            parse_input(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         CouchbaseMetaClient s_client = connect(_node1, _port1);
         CouchbaseMetaClient d_client = connect(_node2, _port2);
 
         I_terator(s_client, d_client);
+        System.out.println("> > > COMPLETED POPULATING HASHTABLE < < <");
 
         Boolean didMatch = true;
         int mismatchCount = 0;
+        int totalRecords = 0;
         for (Map.Entry<String, String> htEntries : n1.entrySet()) {
             if(!(n2.containsKey(htEntries.getKey()) && n2.get(htEntries.getKey()).equals(htEntries.getValue()))){
                 System.out.println("\tKey: " + htEntries.getKey() + " Value: " + htEntries.getValue() + " :: mismatch in n1, n2\n");
                 didMatch = false;
                 mismatchCount++;
             }
+            totalRecords++;
         }
 
         s_client.shutdown();
         d_client.shutdown();
 
         if (didMatch) {
-            System.out.println("- All records matched -");
+            System.out.println("- All records matched, count: " + totalRecords + " -");
         } else {
-            System.out.println("- " + mismatchCount + " records mismatched! -");
+            System.out.println("- " + mismatchCount + " of " + totalRecords + " records mismatched! -");
         }
         System.out.println("> > >  DONE  < < <");
         System.exit(0);
@@ -63,7 +83,7 @@ public class Orchestrator {
 
     @SuppressWarnings("rawtypes")
     private static void I_terator(CouchbaseMetaClient client1, CouchbaseMetaClient client2) throws IOException {
-        for (int i = 0; i < _itemCnt; i++) {
+        for (int i = _start; i < _end; i++) {
             OperationFuture<MetaData> retm = null;
             String key = String.format("%s%d", _prefix, i);
             try {
@@ -80,7 +100,7 @@ public class Orchestrator {
             }
         }
 
-        if (writetofile) {
+        if (_writetofile) {
             System.out.println("Writing data to files source_data_log.txt and destination_data_log.txt");
             File file1 = new File("source_data_log.txt");
             File file2 = new File("destination_data_log.txt");
@@ -128,4 +148,35 @@ public class Orchestrator {
         }
         return null;
     }
+
+    private static void parse_input(Properties properties) {
+        /*
+         * Read test variables from test.properties file
+         */
+        Enumeration<Object> enuKeys = properties.keys();
+        while(enuKeys.hasMoreElements()){
+            String key = (String) enuKeys.nextElement();
+            if (key.equals("node1"))
+                _node1 = properties.getProperty(key);
+            if (key.equals("port1"))
+                _port1 = (Integer.parseInt(properties.getProperty(key)));
+            if (key.equals("node2"))
+                _node2 = properties.getProperty(key);
+            if (key.equals("port2"))
+                _port2 = (Integer.parseInt(properties.getProperty(key)));
+            if (key.equals("bucket"))
+                _bkt = properties.getProperty(key);
+            if (key.equals("password"))
+                _pass = properties.getProperty(key);
+            if (key.equals("prefix"))
+                _prefix = properties.getProperty(key);
+            if (key.equals("start"))
+                _start = (Integer.parseInt(properties.getProperty(key)));
+            if (key.equals("end"))
+                _end = (Integer.parseInt(properties.getProperty(key)));
+            if (key.equals("write-to-file"))
+                _writetofile = (Boolean.parseBoolean(properties.getProperty(key)));
+        }
+    }
+
 }
