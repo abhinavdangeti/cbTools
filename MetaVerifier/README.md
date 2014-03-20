@@ -2,6 +2,7 @@ README
 ======
 
 - Make cluster configuration test.properties
+
 ======
     - node1         : IP of source
     - port1         : port of source
