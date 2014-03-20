@@ -68,6 +68,8 @@ public class Orchestrator {
             totalRecords++;
         }
 
+        System.out.println("> > > COMPLETED MATCHING RECORDS < < <");
+
         s_client.shutdown();
         d_client.shutdown();
 
