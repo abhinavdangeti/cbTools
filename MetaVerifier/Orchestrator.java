@@ -38,12 +38,25 @@ public class Orchestrator {
 
         I_terator(s_client, d_client);
 
+        Boolean didMatch = true;
+        int mismatchCount = 0;
         for (Map.Entry<String, String> htEntries : n1.entrySet()) {
             if(!(n2.containsKey(htEntries.getKey()) && n2.get(htEntries.getKey()).equals(htEntries.getValue()))){
                 System.out.println("\tKey: " + htEntries.getKey() + " Value: " + htEntries.getValue() + " :: mismatch in n1, n2\n");
+                didMatch = false;
+                mismatchCount++;
             }
         }
 
+        s_client.shutdown();
+        d_client.shutdown();
+
+        if (didMatch) {
+            System.out.println("- All records matched -");
+        } else {
+            System.out.println("- " + mismatchCount + " records mismatched! -");
+        }
+        System.out.println("> > >  DONE  < < <");
         System.exit(0);
 
     }
@@ -55,9 +68,13 @@ public class Orchestrator {
             String key = String.format("%s%d", _prefix, i);
             try {
                 retm = client1.getReturnMeta(key);
-                n1.put(key, retm.get().toString());
+                if (retm != null) {
+                    n1.put(key, retm.get().toString());
+                }
                 retm = client2.getReturnMeta(key);
-                n2.put(key, retm.get().toString());
+                if (retm != null) {
+                    n2.put(key, retm.get().toString());
+                }
             } catch (Exception e) {
                 //Do nothing for now
             }
