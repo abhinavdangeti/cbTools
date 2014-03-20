@@ -80,6 +80,7 @@ public class TaskRouter {
             }
         }
 
+        Thread.sleep(1000);
         client.shutdown();
     }
 
