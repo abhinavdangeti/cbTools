@@ -1,7 +1,7 @@
 README
 ======
 
-- Make cluster configuration test.properties
+- Edit cluster configuration in test.properties
 
 ======
     - node1         : IP of source
@@ -15,6 +15,7 @@ README
     - end           : end point of range (keys)
     - write-to-file : boolean value to write records to file or not
 ======
+
 - Run the following commands:
 - To compile: make compile
 - To run: make run
