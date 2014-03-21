@@ -54,7 +54,7 @@ public class Orchestrator {
         CouchbaseMetaClient d_client = connect(_node2, _port2);
 
         I_terator(s_client, d_client);
-        System.out.println("> > > COMPLETED POPULATING HASHTABLE < < <");
+        System.out.println("> > > COMPLETED POPULATING HASHTABLES < < <");
 
         Boolean didMatch = true;
         int mismatchCount = 0;
