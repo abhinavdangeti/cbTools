@@ -60,8 +60,12 @@ public class Orchestrator {
         int mismatchCount = 0;
         int totalRecords = 0;
         for (Map.Entry<String, String> htEntries : n1.entrySet()) {
-            if(!(n2.containsKey(htEntries.getKey()) && n2.get(htEntries.getKey()).equals(htEntries.getValue()))){
-                System.out.println("\tKey: " + htEntries.getKey() + " Value: " + htEntries.getValue() + " :: mismatch in n1, n2\n");
+            if (!(n2.containsKey(htEntries.getKey()))) {
+                System.out.println("\tKey: " + htEntries.getKey() + " from n1 not found in n2");
+                mismatchCount++;
+            } else if (n2.get(htEntries.getKey()).equals(htEntries.getValue())){
+                System.out.println("\tKey: " + htEntries.getKey() + " n1Value: " + htEntries.getValue() +
+                                    " n2Value: " + n2.get(htEntries.getKey()));
                 didMatch = false;
                 mismatchCount++;
             }
