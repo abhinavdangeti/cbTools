@@ -63,7 +63,7 @@ public class Orchestrator {
             if (!(n2.containsKey(htEntries.getKey()))) {
                 System.out.println("\tKey: " + htEntries.getKey() + " from n1 not found in n2");
                 mismatchCount++;
-            } else if (n2.get(htEntries.getKey()).equals(htEntries.getValue())){
+            } else if (!(n2.get(htEntries.getKey()).equals(htEntries.getValue()))){
                 System.out.println("\tKey: " + htEntries.getKey() + " n1Value: " + htEntries.getValue() +
                                     " n2Value: " + n2.get(htEntries.getKey()));
                 didMatch = false;
