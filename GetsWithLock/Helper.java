@@ -30,7 +30,7 @@ public class Helper {
             if (cake == null) {
                 System.out.println("Failed to retrieve: " + (_prefix + i));
             } else {
-                System.out.println(cake.toString());
+                System.out.println((_prefix + i) + " : " + cake.toString());
             }
             i++;
             Thread.sleep(2000);
