@@ -31,7 +31,8 @@ public class Orchestrator {
     private static int _start = 0;
     private static int _end = 10000;
     private static String _prefix = "";
-    private static Boolean _writetofile = false;
+    private static Boolean _writeoutputtofile = true;
+    private static Boolean _writealltofile = false;
 
     public static HashMap<String, String> n1 = new HashMap<String,String>();
     public static HashMap<String, String> n2 = new HashMap<String,String>();
@@ -56,20 +57,41 @@ public class Orchestrator {
         I_terator(s_client, d_client);
         System.out.println("> > > COMPLETED POPULATING HASHTABLES < < <");
 
+        File file = new File("output-log.txt");
+        if (file.exists())
+            file.delete();
+        file.createNewFile();
+        FileWriter fw = new FileWriter(file.getAbsolutePath());
+        BufferedWriter bw = new BufferedWriter(fw);
+
         Boolean didMatch = true;
         int mismatchCount = 0;
         int totalRecords = 0;
         for (Map.Entry<String, String> htEntries : n1.entrySet()) {
             if (!(n2.containsKey(htEntries.getKey()))) {
-                System.out.println("\tKey: " + htEntries.getKey() + " from n1 not found in n2");
+                String s1 = "\tKey: " + htEntries.getKey() + " from n1 not found in n2\n";
+                if (_writeoutputtofile) {
+                    bw.write(s1);
+                } else {
+                    System.out.println(s1);
+                }
                 mismatchCount++;
             } else if (!(n2.get(htEntries.getKey()).equals(htEntries.getValue()))){
-                System.out.println("\tKey: " + htEntries.getKey() + " n1Value: " + htEntries.getValue() +
-                                    " n2Value: " + n2.get(htEntries.getKey()));
+                String s2 = "\tKey: " + htEntries.getKey() + " n1Value: " + htEntries.getValue() +
+                            " n2Value: " + n2.get(htEntries.getKey());
+                if (_writeoutputtofile) {
+                    bw.write(s2);
+                } else {
+                    System.out.println(s2);
+                }
                 didMatch = false;
                 mismatchCount++;
             }
             totalRecords++;
+        }
+
+        if (!_writeoutputtofile) {
+            file.delete();
         }
 
         System.out.println("> > > COMPLETED MATCHING RECORDS < < <");
@@ -106,7 +128,7 @@ public class Orchestrator {
             }
         }
 
-        if (_writetofile) {
+        if (_writealltofile) {
             System.out.println("Writing data to files source_data_log.txt and destination_data_log.txt");
             File file1 = new File("source_data_log.txt");
             File file2 = new File("destination_data_log.txt");
@@ -180,8 +202,10 @@ public class Orchestrator {
                 _start = (Integer.parseInt(properties.getProperty(key)));
             if (key.equals("end"))
                 _end = (Integer.parseInt(properties.getProperty(key)));
-            if (key.equals("write-to-file"))
-                _writetofile = (Boolean.parseBoolean(properties.getProperty(key)));
+            if (key.equals("write-output-to-file"))
+                _writeoutputtofile = (Boolean.parseBoolean(properties.getProperty(key)));
+            if (key.equals("write-all-to-file"))
+                _writealltofile = (Boolean.parseBoolean(properties.getProperty(key)));
         }
     }
 
