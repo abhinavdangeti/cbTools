@@ -36,11 +36,11 @@ public class TaskRouter {
             }
         }
 
-        int set_thread_count = (int) (_threadCount * _setThreadRatio);
-        int get_thread_count = _threadCount - set_thread_count;
+        int get_thread_count = (int) (_threadCount * (1 - _setThreadRatio));
+        int set_thread_count = _threadCount - get_thread_count;
 
-        Thread[] _setLaunch = new Thread[set_thread_count];
         Thread[] _getLaunch = new Thread[get_thread_count];
+        Thread[] _setLaunch = new Thread[set_thread_count];
 
         double ratio = (double) _itemCount / set_thread_count;
 
@@ -48,23 +48,27 @@ public class TaskRouter {
             System.out.println("Item count at 0 and resident ratio not set either, no workload!");
             return;
         }
+
         int i,j;
+
         for (i = 0; i < set_thread_count; i++) {
             //System.out.println("Launching sets' thread " + i);
             if (_resRatio <= 0) {
                 _setLaunch[i] = new Thread(new SetRunnable((int)(i * ratio), (int)((i + 1) * ratio)));
             } else {
-                _setLaunch[i] = new Thread(new SetRunnable(i * 1000000, 0));
+                _setLaunch[i] = new Thread(new SetRunnable((i * 100000), ((i + 1) * 100000)));
             }
             _setLaunch[i].start();
         }
+
+        ratio = (double) _itemCount / get_thread_count;
 
         for (j = 0; j < get_thread_count; j++) {
             //System.out.println("Launching gets' thread " + j);
             if (_resRatio <= 0.0) {
                 _getLaunch[j] = new Thread(new GetRunnable((int)(j * ratio), (int)((j + 1) * ratio)));
             } else {
-                _getLaunch[j] = new Thread(new GetRunnable(j * 1000000, 0));
+                _getLaunch[j] = new Thread(new GetRunnable((j * 100000), ((j + 1) * 100000)));
             }
             _getLaunch[j].start();
         }
