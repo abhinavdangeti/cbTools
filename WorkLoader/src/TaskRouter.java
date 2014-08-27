@@ -56,7 +56,8 @@ public class TaskRouter {
             if (_resRatio <= 0) {
                 _setLaunch[i] = new Thread(new SetRunnable((int)(i * ratio), (int)((i + 1) * ratio)));
             } else {
-                _setLaunch[i] = new Thread(new SetRunnable((i * 100000), ((i + 1) * 100000)));
+                //Launches a sets thread whose prefixes start from (i * 1000000)
+                _setLaunch[i] = new Thread(new SetRunnable((i * 1000000), 0));
             }
             _setLaunch[i].start();
         }
@@ -68,7 +69,8 @@ public class TaskRouter {
             if (_resRatio <= 0.0) {
                 _getLaunch[j] = new Thread(new GetRunnable((int)(j * ratio), (int)((j + 1) * ratio)));
             } else {
-                _getLaunch[j] = new Thread(new GetRunnable((j * 100000), ((j + 1) * 100000)));
+                //Launches a gets thread whose prefixes start from (j * 1000000)
+                _getLaunch[j] = new Thread(new GetRunnable((j * 1000000), 0));
             }
             _getLaunch[j].start();
         }
