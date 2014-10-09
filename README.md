@@ -1,4 +1,4 @@
-bugBusters: Tools to track specific bugs in Couchbase, and verify fixes.
+bugBusters: Tools that play with couchbase.
 
 - DataFetcher   :   Fetches {key, metadata, value} of specified key.
 - GetsWithLock  :   Runs GetWithLock op on select items infinitely.
