@@ -15,15 +15,15 @@ public class Tracker {
             throws UnknownHostException, InterruptedException {
 
         for (int i = 0; i < item_chkpts.length; i++) {
-            int checkpoint = Integer.parseInt(item_chkpts[i]);
-            int curr = Integer.parseInt(_retrieve_val("vb_active_curr_items", client));
+            long checkpoint = Long.parseLong(item_chkpts[i]);
+            long curr = Long.parseLong(_retrieve_val("vb_active_curr_items", client));
             while ((curr == 0) || curr < checkpoint) {
                 Thread.sleep(1000);
-                curr = Integer.parseInt(_retrieve_val("vb_active_curr_items", client));
+                curr = Long.parseLong(_retrieve_val("vb_active_curr_items", client));
             }
-            int usage = Integer.parseInt(_retrieve_val("mem_used", client));
+            long usage = Long.parseLong(_retrieve_val("mem_used", client));
             while (usage == 0) {
-                usage = Integer.parseInt(_retrieve_val("mem_used", client));
+                usage = Long.parseLong(_retrieve_val("mem_used", client));
             }
             double residentRatio =
                 Double.parseDouble(_retrieve_val("vb_active_perc_mem_resident", client));
