@@ -19,7 +19,6 @@ public class Orchestrator {
     private static String _prefix = "";         //Key prefixes
     private static boolean _json = false;
     private static String[] _itemChkPts = {};
-    private static long _itemMax = 0;
     private static int _itemSize = 0;
 
     public static void main(String args[]) throws InterruptedException {
@@ -42,7 +41,7 @@ public class Orchestrator {
         Runnable _sets_ = new Runnable() {
             public void run() {
                 try {
-                    Sets.set_items(client1, _prefix, _itemMax, _json, _itemSize);
+                    Sets.set_items(client1, _prefix, _json, _itemSize);
                 } catch (Exception e) {
                     // e.printStackTrace();
                 }
@@ -109,8 +108,6 @@ public class Orchestrator {
                 _json = (Boolean.parseBoolean(properties.getProperty(key)));
             if (key.equals("item-counts"))
                 _itemChkPts = properties.getProperty(key).split(",");
-            if (key.equals("item-max"))
-                _itemMax = (Long.parseLong(properties.getProperty(key)));
             if (key.equals("item-size"))
                 _itemSize = (Integer.parseInt(properties.getProperty(key)));
         }

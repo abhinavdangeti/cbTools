@@ -16,12 +16,13 @@ import com.couchbase.client.CouchbaseClient;
 
 public class Sets {
     public static void set_items (CouchbaseClient client, String _prefix,
-                                  long item_max, boolean isJson, int itemSize)
+                                  boolean isJson, int itemSize)
                                   throws JSONException, InterruptedException {
 
         Random gen = new Random(987654321);
         List<OperationFuture<Boolean>> sets = new LinkedList<OperationFuture<Boolean>>();
-        for (int i=0; i<item_max; i++) {
+        int i = 0;
+        while (true) {
             OperationFuture<Boolean> setOp;
             String key = String.format("%s%d", _prefix, i);
             if (isJson) {
@@ -29,7 +30,7 @@ public class Sets {
             } else {
                 setOp = client.set(key, Gen.retrieveBinary(itemSize));
             }
+            i++;
         }
-
     }
 }
