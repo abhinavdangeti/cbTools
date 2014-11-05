@@ -11,5 +11,4 @@ Setting test.properties:
     - prefix..............prefix for keys generated
     - json................is json?
     - item-counts.........item count checkpoints [format: 1000,10000,100000]
-    - item-max............max count
     - item-size...........size of each item created
