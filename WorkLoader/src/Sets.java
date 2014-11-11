@@ -16,7 +16,8 @@ import com.couchbase.client.CouchbaseClient;
 
 public class Sets {
 
-    public static void set_items(CouchbaseClient client, boolean _isJson, String _prefix,
+    public static void set_items(CouchbaseClient client, CouchbaseClient tClient,
+                                 boolean _isJson, String _prefix,
             double _resRatio, int _itemSize, boolean _checkFlag,
             int start, int end) throws JSONException, UnknownHostException {
 
@@ -54,7 +55,7 @@ public class Sets {
             if (_checkFlag) {
                 sets.add(setOp);
             }
-            while (_retrieve_val("vb_active_perc_mem_resident", client) > _resRatio) {
+            while (_retrieve_val("vb_active_perc_mem_resident", tClient) > _resRatio) {
                 j++;
                 while (j % batch != 0) {
                     key = String.format("%s%d", _prefix, j);

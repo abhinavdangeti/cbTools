@@ -8,17 +8,19 @@ import com.couchbase.client.CouchbaseClient;
 
 public class TaskRouter {
 
-    public static void runClientOps(final CouchbaseClient client, final String _prefix,
-                                    final boolean _json, int _itemCount, final int _itemSize,
-                                    int _threadCount, double _setThreadRatio, final double _resRatio,
-                                    final boolean _checkFlag) throws InterruptedException {
+    public static void runClientOps(final CouchbaseClient client1, final CouchbaseClient client2,
+                                    final String _prefix, final boolean _json, int _itemCount,
+                                    final int _itemSize, int _threadCount, double _setThreadRatio,
+                                    final double _resRatio, final boolean _checkFlag)
+                                    throws InterruptedException {
 
         class SetRunnable implements Runnable {
             int start, end;
             SetRunnable(int st, int ed) { start = st; end = ed; }
             public void run() {
                 try {
-                    Sets.set_items(client, _json, _prefix, _resRatio, _itemSize, _checkFlag,
+                    Sets.set_items(client1, client2, _json, _prefix,
+                                   _resRatio, _itemSize, _checkFlag,
                             start, end);
                 } catch (JSONException e) {
                     //e.printStackTrace();
@@ -32,7 +34,7 @@ public class TaskRouter {
             int start, end;
             GetRunnable(int st, int ed) { start = st; end = ed; }
             public void run() {
-                Gets.get_items(client, _json, _prefix, _resRatio, start, end);
+                Gets.get_items(client1, _json, _prefix, _resRatio, start, end);
             }
         }
 
@@ -87,7 +89,8 @@ public class TaskRouter {
         }
 
         Thread.sleep(1000);
-        client.shutdown();
+        client1.shutdown();
+        client2.shutdown();
     }
 
 }

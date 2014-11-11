@@ -49,14 +49,16 @@ public class Orchestrator {
                     bucketpasswd = _buckets[i].split(":")[1];
 
                 final CouchbaseClient client = connect(_Nodes[0], bucketname, bucketpasswd);
+                final CouchbaseClient trackingClient = connect(_Nodes[0], bucketname,
+                                                               bucketpasswd);
 
                 Runnable _control_ = new Runnable() {
                     public void run() {
                         // System.out.println("Client thread starts");
                         try {
-                            TaskRouter.runClientOps(client, _prefix, _json, _itemCount,
-                                                    _itemSize, _threadCount, _setThreadRatio,
-                                                    _resRatio, _checkFlag);
+                            TaskRouter.runClientOps(client, trackingClient, _prefix, _json,
+                                                    _itemCount, _itemSize, _threadCount,
+                                                    _setThreadRatio, _resRatio, _checkFlag);
                         } catch (Exception e) {
                             // e.printStackTrace();
                         }
