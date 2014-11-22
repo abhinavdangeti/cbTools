@@ -45,6 +45,7 @@ public class Sets {
              * If desired resident ratio entered
              */
             int j = start;
+            // Number of sets after which the resident ratio is checked
             int batch = 10000;
             key = String.format("%s%d", _prefix, j);
             if (_isJson) {
