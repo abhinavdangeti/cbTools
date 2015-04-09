@@ -40,13 +40,24 @@ public class Fetcher {
 
         CouchbaseMetaClient client = connect(_node, _port);
         OperationFuture<MetaData> retm = client.getReturnMeta(_key);;
-        String value = client.get(_key).toString();
 
         System.out.println("-----------------------------------------------------------------------");
-        System.out.println("KEY: " + _key + "\nMETADATA: " + retm.get().toString() + "\nDATASIZE: " + value.length());
+        System.out.println("KEY: " + _key);
+        if (retm.get() != null) {
+            System.out.println("METADATA: " + retm.get().toString());
+        } else {
+            System.out.println("(returnMeta) --> - KEY NOT FOUND - ");
+        }
         System.out.println("-----------------------------------------------------------------------");
-        if (_printVal) {
-            System.out.println("DATA: " + value);
+        if (client.get(_key) != null) {
+            String value = client.get(_key).toString();
+            System.out.println("DATASIZE: " + value.length());
+            if (_printVal) {
+                System.out.println("DATA: " + value);
+            }
+            System.out.println("-----------------------------------------------------------------------");
+        } else {
+            System.out.println("(get) --> - GET RETURNED NULL - ");
             System.out.println("-----------------------------------------------------------------------");
         }
 
