@@ -5,4 +5,4 @@ run:
 	java -cp .:lib/* Orchestrator
 
 clean:
-	rm -rf *.class
+	rm -rf *.class *.txt
