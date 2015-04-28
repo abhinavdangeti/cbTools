@@ -75,6 +75,7 @@ public class Orchestrator {
                 } else {
                     System.out.println(s1);
                 }
+                didMatch = false;
                 mismatchCount++;
             } else if (!(n2.get(htEntries.getKey()).equals(htEntries.getValue()))){
                 String s2 = "\tKey: " + htEntries.getKey() + " n1Value: " + htEntries.getValue() +
