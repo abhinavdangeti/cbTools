@@ -17,12 +17,18 @@ public class Controller {
         return _keyCounter.incrementAndGet();
     }
 
-    public static String getFromKeyQueue() {
+    public static String getFromKeyQueue(boolean doRepeat) {
         if (_keyQueue.isEmpty()) {
             return null;
         }
         // Dequeue
-        return _keyQueue.remove();
+        if (doRepeat) {
+            String key = _keyQueue.remove();
+            _keyQueue.add(key);
+            return key;
+        } else {
+            return _keyQueue.remove();
+        }
     }
 
     public static boolean shouldWaitForProducer(int finalCount) {

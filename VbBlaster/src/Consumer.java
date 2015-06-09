@@ -14,7 +14,7 @@ import com.couchbase.client.CouchbaseClient;
 
 public class Consumer extends Controller {
 
-    public static void consume(CouchbaseClient client, boolean _json,
+    public static void consume(CouchbaseClient client, boolean _repeat, boolean _json,
             int _itemCount, int _itemSize, boolean _checkFlag)
         throws InterruptedException, JSONException, ExecutionException {
 
@@ -23,7 +23,7 @@ public class Consumer extends Controller {
         int counter = _itemCount;
         while (counter != 0) {
             OperationFuture<Boolean> setOp;
-            String key = getFromKeyQueue();
+            String key = getFromKeyQueue(_repeat);
             if (key != null) {
                 if (_json) {
                     setOp = client.set(key, Gen.retrieveJSON(gen, _itemSize).toString());

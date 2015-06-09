@@ -17,6 +17,7 @@ public class Orchestrator {
     private static String _Port = "";
     private static String[] _buckets = {};
     private static int _targetVB = 0;
+    private static boolean _repeat = false;
     private static String _prefix = "";
     private static boolean _json = false;
     private static int _itemCount = 0;
@@ -49,7 +50,7 @@ public class Orchestrator {
             Runnable _control_ = new Runnable() {
                 public void run() {
                     try {
-                        Blaster.runThemAll(client, _targetVB, _prefix,
+                        Blaster.runThemAll(client, _targetVB, _repeat, _prefix,
                                 _json, _itemCount, _itemSize, _checkFlag);
                     } catch (Exception e) {
                         // e.printStackTrace();
@@ -102,6 +103,8 @@ public class Orchestrator {
 
             if (key.equals("target-vb"))
                 _targetVB = Integer.parseInt(properties.getProperty(key));
+            if (key.equals("repeat"))
+                _repeat = Boolean.parseBoolean(properties.getProperty(key));
 
             if (key.equals("prefix"))
                 _prefix = properties.getProperty(key);

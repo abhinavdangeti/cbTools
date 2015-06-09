@@ -6,15 +6,16 @@ import com.couchbase.client.CouchbaseClient;
 public class Blaster {
 
     public static void runThemAll(final CouchbaseClient client, final int _targetVB,
-            final String _prefix, final boolean _json,
-            final int _itemCount, final int _itemSize,
-            final boolean _checkFlag) throws InterruptedException {
+            final boolean _repeat, final String _prefix,
+            final boolean _json, final int _itemCount,
+            final int _itemSize, final boolean _checkFlag)
+        throws InterruptedException {
 
 
         Runnable _producer = new Runnable() {
             public void run() {
                 try {
-                    System.out.println("Spawing producer ...");
+                    System.out.println("Spawning producer ...");
                     Producer.produce(_targetVB, _prefix, _itemCount);
                 } catch (Exception e) {
                     // e.printStackTrace();
@@ -25,8 +26,9 @@ public class Blaster {
         Runnable _consumer = new Runnable() {
             public void run() {
                 try {
-                    System.out.println("Spawing consumer ...");
-                    Consumer.consume(client, _json, _itemCount, _itemSize, _checkFlag);
+                    System.out.println("Spawning consumer ...");
+                    Consumer.consume(client, _repeat, _json,
+                            _itemCount, _itemSize, _checkFlag);
                 } catch (Exception e) {
                     // e.printStackTrace();
                 }
