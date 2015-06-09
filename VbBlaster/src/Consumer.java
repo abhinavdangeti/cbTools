@@ -35,8 +35,10 @@ public class Consumer extends Controller {
                     sets.add(setOp);
                 }
                 --counter;
-            } else {
+            } else if (shouldWaitForProducer(_itemCount)) {
                 Thread.sleep(1000);
+            } else {
+                break;
             }
         }
 
