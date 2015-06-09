@@ -9,5 +9,5 @@ def get_vbucket(key):
 if (len(sys.argv) == 2):
     print get_vbucket(str(sys.argv[1]));
 else:
-    print "Usage: Enter the key as an argument!"
+    print "Usage: python targetVB.py <key>"
 
