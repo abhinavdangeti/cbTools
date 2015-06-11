@@ -29,8 +29,8 @@ public class Consumer extends Controller {
                     setOp = client.set(key, Gen.retrieveJSON(gen, _itemSize).toString());
                 } else {
                     setOp = client.set(key, Gen.retrieveBinary(_itemSize));
-                    assert setOp.isDone();
                 }
+                assert setOp.isDone();
                 if (_checkFlag) {
                     sets.add(setOp);
                 }
