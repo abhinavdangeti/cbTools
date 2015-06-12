@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import com.couchbase.client.CouchbaseClient;
 import com.couchbase.client.CouchbaseConnectionFactoryBuilder;
@@ -65,7 +66,7 @@ public class Orchestrator {
             _control[j].join();
         }
 
-        Thread.sleep(2000);
+        TimeUnit.SECONDS.sleep(2);
         System.out.println(" ........... done ...........");
         System.exit(0);
     }
