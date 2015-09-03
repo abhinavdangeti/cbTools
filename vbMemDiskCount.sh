@@ -2,16 +2,16 @@
 
 #This script detects mismatches in the number of items in memory
 #and disk for a couchbase bucket.
-#Do set BIN_DIR, DATA_DIR and BUCKET correctly for correct results.
+#Do set BIN_DIR, DATA_DIR, BUCKET, IP, PORT for correct results.
 
 BIN_DIR="/Users/abhinavdangeti/Documents/couchbaseS/install/bin"
 DATA_DIR="/Users/abhinavdangeti/Documents/couchbaseS/ns_server/data/n_0/data"
 BUCKET="default"
 
-NUM_VBUCKETS=1024
-
 IP='127.0.0.1'
 PORT='12000'
+
+NUM_VBUCKETS=1024
 
 writeOutputToFile=false
 
