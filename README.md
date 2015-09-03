@@ -10,6 +10,6 @@ cbTools
     - VbBlaster         :   Load generator for a specific vbucket
     - WorkLoader        :   A multi-threaded read-write generator (creates and gets only).
 
-    - vbMemDiskcount.sh :   Program that detects mismatches in item count between memory and disk across all vbuckets.
     - targetKeys.py     :   Program that prints a list of keys (count specifiable), for a specified vbucket.
     - targetVB.py       :   Program that tells the target vbucket for a specified key.
+    - vbMemDiskcount.sh :   Program that detects mismatches in item count between memory and disk across all vbuckets.
