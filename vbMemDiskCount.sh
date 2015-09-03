@@ -4,6 +4,13 @@
 #and disk for a couchbase bucket.
 #Do set BIN_DIR, DATA_DIR, BUCKET, IP, PORT for correct results.
 
+verbose=false
+if [ $# -eq 1 ] ; then
+    if [ "$1" = '-v' ] ; then
+        verbose=true
+    fi
+fi
+
 BIN_DIR="/Users/abhinavdangeti/Documents/couchbaseS/install/bin"
 DATA_DIR="/Users/abhinavdangeti/Documents/couchbaseS/ns_server/data/n_0/data"
 BUCKET="default"
@@ -44,6 +51,8 @@ do
         if [ "$mem_count" != "$disk_count" ] ; then
             echo 'Mismatch:: vb: '$i' => in-memory: '$mem_count'; in-disk: '$disk_count
             let "count++"
+        elif [ "$verbose" = true ] ; then
+            echo 'No mismatch on vb: '$i
         fi
     fi
 done
