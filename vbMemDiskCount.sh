@@ -31,6 +31,8 @@ if [ "$writeOutputToFile" = true ] ; then
 fi
 
 count=0
+total_mem_count=0
+total_disk_count=0
 for (( i=0; i<$NUM_VBUCKETS; i++ ))
 do
     x=`$BIN_DIR/cbstats $IP:$PORT vbucket-details $i | grep 'num_items'`
@@ -39,6 +41,7 @@ do
         printf '\n' >> $inMemCountFile
     fi
     mem_count=${x##* }
+    let "total_mem_count += mem_count"
     y=`$BIN_DIR/couch_dbinfo $DATA_DIR/$BUCKET/$i.couch.* | grep '  doc count'`
     if [ "$writeOutputToFile" = true ] ; then
         z='vb: '$i' '$y
@@ -46,6 +49,7 @@ do
         printf '\n' >> $diskCountFile
     fi
     disk_count=${y##* }
+    let "total_disk_count += disk_count"
 
     if [ -n "$mem_count" ] && [ -n "$disk_count" ] ; then
         if [ "$mem_count" != "$disk_count" ] ; then
@@ -57,6 +61,8 @@ do
     fi
 done
 
-echo '====================================='
+echo '======================================================'
 echo 'Mismatches detected in: '$count' vbuckets!'
-echo '====================================='
+echo '======================================================'
+echo 'Mem_item_count: '$total_mem_count'; Disk_item_count: '$total_disk_count
+echo '======================================================'
