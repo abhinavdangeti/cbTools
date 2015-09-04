@@ -11,14 +11,16 @@ if [ $# -eq 1 ] ; then
     fi
 fi
 
-BIN_DIR="/Users/abhinavdangeti/Documents/couchbaseS/install/bin"
-DATA_DIR="/Users/abhinavdangeti/Documents/couchbaseS/ns_server/data/n_0/data"
+BIN_DIR="/Users/abhinavdangeti/Documents/couchbase/install/bin"
+DATA_DIR="/Users/abhinavdangeti/Documents/couchbase/ns_server/data/n_0/data"
 BUCKET="default"
 
 IP='127.0.0.1'
 PORT='12000'
 
 NUM_VBUCKETS=1024
+
+export DYLD_LIBRARY_PATH=$BIN_DIR/../lib
 
 writeOutputToFile=false
 
