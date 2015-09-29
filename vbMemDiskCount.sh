@@ -20,6 +20,17 @@ PORT='12000'
 
 NUM_VBUCKETS=1024
 
+
+if [ ! -d "$BIN_DIR" ] ; then
+    echo 'Dir:'$BIN_DIR', DOES NOT EXIST!'
+    exit
+fi
+
+if [ ! -d "$DATA_DIR" ] ; then
+    echo 'Dir:'$DATA_DIR', DOES NOT EXIST!'
+    exit
+fi
+
 export DYLD_LIBRARY_PATH=$BIN_DIR/../lib
 
 writeOutputToFile=false
