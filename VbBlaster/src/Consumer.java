@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jettison.json.JSONException;
 
@@ -12,11 +11,11 @@ import net.spy.memcached.internal.OperationFuture;
 
 import com.couchbase.client.CouchbaseClient;
 
-
 public class Consumer extends Controller {
 
-    public static void consume(CouchbaseClient client, boolean _repeat, boolean _json,
-            int _itemCount, int _itemSize, boolean _checkFlag)
+    public static void consume(CouchbaseClient client, String _bucketName, int _targetVB,
+                               boolean _repeat, boolean _json, int _itemCount, int _itemSize,
+                               boolean _checkFlag)
         throws InterruptedException, JSONException, ExecutionException {
 
         Random gen = new Random(987654321);
@@ -30,16 +29,14 @@ public class Consumer extends Controller {
                     setOp = client.set(key, Gen.retrieveJSON(gen, _itemSize).toString());
                 } else {
                     setOp = client.set(key, Gen.retrieveBinary(_itemSize));
+                    assert setOp.isDone();
                 }
-                assert setOp.isDone();
                 if (_checkFlag) {
                     sets.add(setOp);
                 }
-                if (!_repeat) {
-                    --counter;
-                }
+                --counter;
             } else if (shouldWaitForProducer(_itemCount)) {
-                TimeUnit.SECONDS.sleep(1);
+                Thread.sleep(1000);
             } else {
                 break;
             }
@@ -58,7 +55,8 @@ public class Consumer extends Controller {
                 }
                 sets.remove(0);
             }
-            System.out.println("Missed " + count + " SETs.");
+            System.out.println("[CONSUMER] >>> [Bucket:" + _bucketName + ";VB:" + _targetVB +
+                               "]: Missed " + count + " SETs.");
         }
     }
 

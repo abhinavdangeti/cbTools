@@ -17,7 +17,7 @@ public class Orchestrator {
     private static String _Node = "";
     private static String _Port = "";
     private static String[] _buckets = {};
-    private static int _targetVB = 0;
+    private static String[] _targetVBs = {};
     private static boolean _repeat = false;
     private static String _prefix = "";
     private static boolean _json = false;
@@ -39,31 +39,49 @@ public class Orchestrator {
             e.printStackTrace();
         }
 
-        Thread[] _control = new Thread[_buckets.length];
-        for (int i=0; i<_buckets.length; i++) {
-            String bucketname = _buckets[i].split(":")[0];
+        Thread[][] _control = new Thread[_buckets.length][_targetVBs.length];
+        for (int i = 0; i < _buckets.length; i++) {
+            if (_buckets[i].isEmpty()) {
+                continue;
+            }
+
+            final String bucketname = _buckets[i].split(":")[0];
             String bucketpasswd = "";
             if (_buckets[i].contains(":")) {
                 bucketpasswd = _buckets[i].split(":")[1];
             }
 
             final CouchbaseClient client = connect(_Node, bucketname, bucketpasswd);
-            Runnable _control_ = new Runnable() {
-                public void run() {
-                    try {
-                        Blaster.runThemAll(client, _targetVB, _repeat, _prefix,
-                                _json, _itemCount, _itemSize, _checkFlag);
-                    } catch (Exception e) {
-                        // e.printStackTrace();
-                    }
+
+            for (int j = 0; j < _targetVBs.length; j++) {
+                if (_targetVBs[j].isEmpty()) {
+                    continue;
                 }
-            };
-            _control[i] = new Thread(_control_);
-            _control[i].start();
+
+                final int vb = Integer.parseInt(_targetVBs[j]);
+                Runnable _control_ = new Runnable() {
+                    public void run() {
+                        try {
+                            Blaster.runThemAll(client, bucketname, vb, _repeat, _prefix,
+                                               _json, _itemCount, _itemSize, _checkFlag);
+                        } catch (Exception e) {
+                            // e.printStackTrace();
+                        }
+                    }
+                };
+                _control[i][j] = new Thread(_control_);
+                _control[i][j].start();
+            }
         }
 
-        for (int j=0; j<_buckets.length; j++) {
-            _control[j].join();
+        for (int i = 0; i < _buckets.length; i++) {
+            if (!_buckets[i].isEmpty()) {
+                for (int j = 0; j < _targetVBs.length; j++) {
+                    if (!_targetVBs[j].isEmpty()) {
+                        _control[i][j].join();
+                    }
+                }
+            }
         }
 
         TimeUnit.SECONDS.sleep(2);
@@ -102,8 +120,8 @@ public class Orchestrator {
             if (key.equals("buckets"))
                 _buckets = properties.getProperty(key).split(",");
 
-            if (key.equals("target-vb"))
-                _targetVB = Integer.parseInt(properties.getProperty(key));
+            if (key.equals("target-vbs"))
+                _targetVBs = properties.getProperty(key).split(",");
             if (key.equals("repeat"))
                 _repeat = Boolean.parseBoolean(properties.getProperty(key));
 
