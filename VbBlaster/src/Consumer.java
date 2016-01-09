@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jettison.json.JSONException;
 
@@ -29,14 +30,16 @@ public class Consumer extends Controller {
                     setOp = client.set(key, Gen.retrieveJSON(gen, _itemSize).toString());
                 } else {
                     setOp = client.set(key, Gen.retrieveBinary(_itemSize));
-                    assert setOp.isDone();
                 }
+                assert setOp.isDone();
                 if (_checkFlag) {
                     sets.add(setOp);
                 }
-                --counter;
+                if (!_repeat) {
+                    --counter;
+                }
             } else if (shouldWaitForProducer(_itemCount)) {
-                Thread.sleep(1000);
+                TimeUnit.SECONDS.sleep(1);
             } else {
                 break;
             }
