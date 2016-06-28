@@ -20,6 +20,7 @@ PORT='12000'
 
 NUM_VBUCKETS=1024
 STORE="couchstore"
+SHARD_COUNT=4
 
 if [ ! -d "$BIN_DIR" ] ; then
     echo 'Dir:'$BIN_DIR', DOES NOT EXIST!'
@@ -58,7 +59,7 @@ do
     if ["$STORE" == "couchstore"]; then
         y=`$BIN_DIR/couch_dbinfo $DATA_DIR/$BUCKET/$i.couch.* | grep '  doc count'`
     elif ["$STORE" == "forestdb"]; then
-        y=`$BIN_DIR/forestdb_dump $DATA_DIR/$BUCKET/$(($i%4)).fdb.* --kvs partition$i | grep 'Doc ID: ' | wc -l`
+        y=`$BIN_DIR/forestdb_dump $DATA_DIR/$BUCKET/$(($i % $SHARD_COUNT)).fdb.* --kvs partition$i | grep 'Doc ID: ' | wc -l`
     else
         echo 'Unknown store: '$STORE', !'
         exit
