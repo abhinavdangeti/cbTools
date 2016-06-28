@@ -19,7 +19,7 @@ IP='127.0.0.1'
 PORT='12000'
 
 NUM_VBUCKETS=1024
-
+STORE="couchstore"
 
 if [ ! -d "$BIN_DIR" ] ; then
     echo 'Dir:'$BIN_DIR', DOES NOT EXIST!'
@@ -55,7 +55,14 @@ do
     fi
     mem_count=${x##* }
     let "total_mem_count += mem_count"
-    y=`$BIN_DIR/couch_dbinfo $DATA_DIR/$BUCKET/$i.couch.* | grep '  doc count'`
+    if ["$STORE" == "couchstore"]; then
+        y=`$BIN_DIR/couch_dbinfo $DATA_DIR/$BUCKET/$i.couch.* | grep '  doc count'`
+    elif ["$STORE" == "forestdb"]; then
+        y=`$BIN_DIR/forestdb_dump $DATA_DIR/$BUCKET/$(($i%4)).fdb.* --kvs partition$i | grep 'Doc ID: ' | wc -l`
+    else
+        echo 'Unknown store: '$STORE', !'
+        exit
+    fi
     if [ "$writeOutputToFile" = true ] ; then
         z='vb: '$i' '$y
         printf '%s ' $z  >> $diskCountFile
