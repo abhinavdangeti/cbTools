@@ -19,7 +19,7 @@ IP='127.0.0.1'
 PORT='12000'
 
 NUM_VBUCKETS=1024
-STORE="couchstore"
+STORE='forestdb'
 SHARD_COUNT=4
 
 if [ ! -d "$BIN_DIR" ] ; then
@@ -56,9 +56,9 @@ do
     fi
     mem_count=${x##* }
     let "total_mem_count += mem_count"
-    if ["$STORE" == "couchstore"]; then
+    if [ $STORE = 'couchstore' ]; then
         y=`$BIN_DIR/couch_dbinfo $DATA_DIR/$BUCKET/$i.couch.* | grep '  doc count'`
-    elif ["$STORE" == "forestdb"]; then
+    elif [ $STORE = 'forestdb' ]; then
         y=`$BIN_DIR/forestdb_dump $DATA_DIR/$BUCKET/$(($i % $SHARD_COUNT)).fdb.* --kvs partition$i | grep 'Doc ID: ' | wc -l`
     else
         echo 'Unknown store: '$STORE', !'
