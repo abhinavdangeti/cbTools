@@ -59,7 +59,7 @@ do
     if [ $STORE = 'couchstore' ]; then
         y=`$BIN_DIR/couch_dbinfo $DATA_DIR/$BUCKET/$i.couch.* | grep '  doc count'`
     elif [ $STORE = 'forestdb' ]; then
-        y=`$BIN_DIR/forestdb_dump $DATA_DIR/$BUCKET/$(($i % $SHARD_COUNT)).fdb.* --kvs partition$i | grep 'Doc ID: ' | wc -l`
+        y=`$BIN_DIR/forestdb_dump $DATA_DIR/$BUCKET/$(($i % $SHARD_COUNT)).fdb.3 --kvs partition$i --no-body | grep 'Doc ID: ' | wc -l`
     else
         echo 'Unknown store: '$STORE', !'
         exit
