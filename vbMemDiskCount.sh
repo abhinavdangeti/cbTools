@@ -2,7 +2,15 @@
 
 #This script detects mismatches in the number of items in memory
 #and disk for a couchbase bucket.
-#Do set BIN_DIR, DATA_DIR, BUCKET, IP, PORT for correct results.
+
+"""
+MUST DOs:
+    - Set BIN_DIR, DATA_DIR, BUCKET, IP, PORT for correct results.
+    - Select the right underlying store for the couchbase bucket.
+      (If forestDB is chosen, set SHARD_COUNT appropriately)
+    - Optionally, set writeOutputToFile to true if you want in-mem
+      and disk results to be written to a file.
+"""
 
 verbose=false
 if [ $# -eq 1 ] ; then
