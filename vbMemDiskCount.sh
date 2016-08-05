@@ -1,7 +1,8 @@
 #!/bin/bash
 
-#This script detects mismatches in the number of items in memory
-#and disk for a couchbase bucket.
+# This script detects mismatches in the number of items in memory
+# and disk for a couchbase bucket with couchstore or forestdb as
+# storage engines.
 
 """
 MUST DOs:
