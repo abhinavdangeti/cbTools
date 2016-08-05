@@ -1,4 +1,4 @@
-workLoader
+DataLoader
 ==========
 - If resident-ratio is set, item-count won’t be considered.
 - resident-ratio should be greater than 0.0 to be considered.
