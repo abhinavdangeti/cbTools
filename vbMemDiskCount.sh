@@ -13,10 +13,15 @@ MUST DOs:
       and disk results to be written to a file.
 """
 
-verbose=false
+# Default verbose setting at 1, prints vbucket level mismatches
+verbose=1
 if [ $# -eq 1 ] ; then
-    if [ "$1" = '-v' ] ; then
-        verbose=true
+    if [ "$1" = '-nv' ] ; then
+        # Not verbose, no vbucket level numbers
+        verbose=0
+    elif [ "$1" = '-vv'] ; then
+        # Very verbose, vbucket level matches along with mismatches
+        verbose=2
     fi
 fi
 
@@ -83,9 +88,11 @@ do
 
     if [ -n "$mem_count" ] && [ -n "$disk_count" ] ; then
         if [ "$mem_count" != "$disk_count" ] ; then
-            echo 'Mismatch:: vb: '$i' => in-memory: '$mem_count'; in-disk: '$disk_count
+            if [ "$verbose" = 1 ]; then
+                echo 'Mismatch:: vb: '$i' => in-memory: '$mem_count'; in-disk: '$disk_count
+            fi
             let "count++"
-        elif [ "$verbose" = true ] ; then
+        elif [ "$verbose" = 2 ] ; then
             echo 'No mismatch on vb: '$i
         fi
     fi
