@@ -35,10 +35,12 @@ func updateFieldsInQuery(q query.Query, field string) error {
 }
 
 type Options struct {
-	Type      string  `json:"type"`
-	Analyzer  string  `json:"analyzer"`
-	Boost     float64 `json:"boost"`
-	Fuzziness int     `json:"fuzziness"`
+	Type         string   `json:"type"`
+	Analyzer     string   `json:"analyzer"`
+	Boost        float64  `json:"boost"`
+	Fuzziness    int      `json:"fuzziness"`
+	PrefixLength int      `json:"prefix_length"`
+	Operator     string      `json:"operator"`
 }
 
 func PrepQuery(field, input, options string) (query.Query, error) {
@@ -71,9 +73,13 @@ func PrepQuery(field, input, options string) (query.Query, error) {
 			return nil, fmt.Errorf("updateFieldsInQuery, err: %v", err)
 		}
 		return q, nil
+	case "bool":
+		fallthrough
 	case "match_phrase":
 		fallthrough
 	case "match":
+		fallthrough
+	case "prefix":
 		fallthrough
 	case "regexp":
 		fallthrough
@@ -85,15 +91,24 @@ func PrepQuery(field, input, options string) (query.Query, error) {
 		output := map[string]interface{}{}
 		output["field"] = field
 		output[opt.Type] = input
-		output["analyzer"] = opt.Analyzer
+		if opt.Analyzer != "" {
+			output["analyzer"] = opt.Analyzer
+		}
 		output["boost"] = opt.Boost
 		if opt.Fuzziness > 0 {
 			output["fuzziness"] = opt.Fuzziness
+		}
+		if opt.PrefixLength > 0 {
+			output["prefix_length"] = opt.PrefixLength
+		}
+		if opt.Operator != "" {
+			output["operator"] = opt.Operator
 		}
 		outputJSON, err := json.Marshal(output)
 		if err != nil {
 			return nil, fmt.Errorf("err: %v", err)
 		}
+		fmt.Println(string(outputJSON))
 		q, err := query.ParseQuery(outputJSON)
 		if err != nil {
 			return nil, fmt.Errorf("ParseQuery, err: %v", err)
