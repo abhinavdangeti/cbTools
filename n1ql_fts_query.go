@@ -35,12 +35,12 @@ func updateFieldsInQuery(q query.Query, field string) error {
 }
 
 type Options struct {
-	Type         string   `json:"type"`
-	Analyzer     string   `json:"analyzer"`
-	Boost        float64  `json:"boost"`
-	Fuzziness    int      `json:"fuzziness"`
-	PrefixLength int      `json:"prefix_length"`
-	Operator     string      `json:"operator"`
+	Type         string  `json:"type"`
+	Analyzer     string  `json:"analyzer"`
+	Boost        float64 `json:"boost"`
+	Fuzziness    int     `json:"fuzziness"`
+	PrefixLength int     `json:"prefix_length"`
+	Operator     string  `json:"operator"`
 }
 
 func PrepQuery(field, input, options string) (query.Query, error) {
