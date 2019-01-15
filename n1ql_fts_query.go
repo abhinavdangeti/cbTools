@@ -75,6 +75,10 @@ func PrepQuery(field, input, options string) (query.Query, error) {
 		fallthrough
 	case "match":
 		fallthrough
+	case "regexp":
+		fallthrough
+	case "wildcard":
+		fallthrough
 	case "terms":
 		fallthrough
 	case "term":
@@ -125,6 +129,11 @@ func main() {
 			field:   "title",
 			input:   "Avengers: Infinity War",
 			options: `{"type": "match_phrase", "analyzer": "en", "boost": 10}`,
+		},
+		{
+			field:   "title",
+			input:   "Avengers*",
+			options: `{"type": "wildcard", "analyzer": "en"}`,
 		},
 	}
 
