@@ -122,38 +122,38 @@ func PrepQuery(field, input, options string) (query.Query, error) {
 func main() {
 	tests := []struct {
 		field   string
-		input   string
+		query   string
 		options string
 	}{
 		{
 			field:   "title",
-			input:   "+Avengers~2 +company:marvel",
+			query:   "+Avengers~2 +company:marvel",
 			options: "",
 		},
 		{
 			field:   "title",
-			input:   "+avengers thor",
+			query:   "+avengers thor",
 			options: "{}",
 		},
 		{
 			field:   "title",
-			input:   "avengers",
+			query:   "avengers",
 			options: `{"type": "match", "fuzziness": 2}`,
 		},
 		{
 			field:   "title",
-			input:   "Avengers: Infinity War",
+			query:   "Avengers: Infinity War",
 			options: `{"type": "match_phrase", "analyzer": "en", "boost": 10}`,
 		},
 		{
 			field:   "title",
-			input:   "Avengers*",
+			query:   "Avengers*",
 			options: `{"type": "wildcard", "analyzer": "en"}`,
 		},
 	}
 
 	for i, test := range tests {
-		q, err := PrepQuery(test.field, test.input, test.options)
+		q, err := PrepQuery(test.field, test.query, test.options)
 		if err != nil {
 			panic(err)
 		}
