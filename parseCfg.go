@@ -53,24 +53,36 @@ func main() {
 		}
 	}
 
+	var actualPartitionCount int
+
 	fmt.Println("Actives:")
 	for k, v := range nodeActiveCount {
 		fmt.Printf("\t%s : %d\n", nodeDefsKnown[k], v)
+		actualPartitionCount += v
 	}
 	fmt.Println("Replicas:")
 	for k, v := range nodeReplicaCount {
 		fmt.Printf("\t%s : %d\n", nodeDefsKnown[k], v)
+		actualPartitionCount += v
 	}
 
+	fmt.Printf("Actual number of index partitions in cluster: %v\n", actualPartitionCount)
+
 	indexesMap := map[string]string{}
+	var expectedPartitionCount int
 
 	if payload.IndexDefs != nil {
 		for k, v := range payload.IndexDefs.IndexDefs {
 			indexesMap[k] = fmt.Sprintf("maxPartitionsPerPIndex: %v, indexPartitions: %v, numReplicas: %v",
 				v.PlanParams.MaxPartitionsPerPIndex, v.PlanParams.IndexPartitions, v.PlanParams.NumReplicas)
+
+			currActivePartitions := v.PlanParams.IndexPartitions
+			currReplicaPartitions := currActivePartitions * v.PlanParams.NumReplicas
+			expectedPartitionCount += currActivePartitions + currReplicaPartitions
 		}
 	}
 
+	fmt.Printf("Expected number of index partitions in cluster: %v\n", expectedPartitionCount)
 	fmt.Printf("Indexes: %d\n", len(indexesMap))
 	for k, v := range indexesMap {
 		fmt.Printf("\t%s :: %s\n", k, v)
