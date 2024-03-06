@@ -43,12 +43,24 @@ func main() {
 	nodeActiveCount := map[string]int{}
 	nodeReplicaCount := map[string]int{}
 
+	indexActiveCount := map[string]map[string]int{}
+	indexReplicaCount := map[string]map[string]int{}
+
 	for _, v := range payload.PlanPIndexes.PlanPIndexes {
+		if _, exists := indexActiveCount[v.IndexName]; !exists {
+			indexActiveCount[v.IndexName] = make(map[string]int)
+		}
+		if _, exists := indexReplicaCount[v.IndexName]; !exists {
+			indexReplicaCount[v.IndexName] = make(map[string]int)
+		}
+
 		for k1, v1 := range v.Nodes {
 			if v1.Priority == 0 {
 				nodeActiveCount[k1]++
+				indexActiveCount[v.IndexName][k1]++
 			} else {
 				nodeReplicaCount[k1]++
+				indexReplicaCount[v.IndexName][k1]++
 			}
 		}
 	}
@@ -88,4 +100,20 @@ func main() {
 		fmt.Printf("\t%s :: %s\n", k, v)
 	}
 	fmt.Println()
+
+	fmt.Printf("Index actives distribution\n")
+	for k, v := range indexActiveCount {
+		fmt.Printf("\tIndex: %v\n", k)
+		for k1, v1 := range v {
+			fmt.Printf("\t\t%s : %d\n", nodeDefsKnown[k1], v1)
+		}
+	}
+
+	fmt.Printf("Index replicas distribution\n")
+	for k, v := range indexReplicaCount {
+		fmt.Printf("\tIndex: %v\n", k)
+		for k1, v1 := range v {
+			fmt.Printf("\t\t%s : %d\n", nodeDefsKnown[k1], v1)
+		}
+	}
 }
