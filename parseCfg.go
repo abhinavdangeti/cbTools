@@ -101,7 +101,7 @@ func main() {
 	}
 	fmt.Println()
 
-	fmt.Printf("Index actives distribution\n")
+	fmt.Printf("Index actives distribution:\n")
 	for k, v := range indexActiveCount {
 		fmt.Printf("\tIndex: %v\n", k)
 		for k1, v1 := range v {
@@ -109,11 +109,12 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Index replicas distribution\n")
+	fmt.Printf("Index replicas distribution:\n")
 	for k, v := range indexReplicaCount {
 		fmt.Printf("\tIndex: %v\n", k)
 		for k1, v1 := range v {
 			fmt.Printf("\t\t%s : %d\n", nodeDefsKnown[k1], v1)
 		}
 	}
+	fmt.Println()
 }
