@@ -7,9 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 
 	"github.com/couchbase/cbgt"
 )
+
+const vbuckets = 1024
 
 type X struct {
 	IndexDefs     *cbgt.IndexDefs    `json:"indexDefs"`
@@ -88,7 +91,12 @@ func main() {
 			indexesMap[k] = fmt.Sprintf("maxPartitionsPerPIndex: %v, indexPartitions: %v, numReplicas: %v",
 				v.PlanParams.MaxPartitionsPerPIndex, v.PlanParams.IndexPartitions, v.PlanParams.NumReplicas)
 
-			currActivePartitions := v.PlanParams.IndexPartitions
+			var currActivePartitions int
+			if v.PlanParams.IndexPartitions > 0 {
+				currActivePartitions = v.PlanParams.IndexPartitions
+			} else if v.PlanParams.MaxPartitionsPerPIndex > 0 {
+				currActivePartitions = int(math.Ceil(float64(vbuckets) / float64(v.PlanParams.MaxPartitionsPerPIndex)))
+			}
 			currReplicaPartitions := currActivePartitions * v.PlanParams.NumReplicas
 			expectedPartitionCount += currActivePartitions + currReplicaPartitions
 		}
