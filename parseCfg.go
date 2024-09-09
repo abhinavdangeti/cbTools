@@ -71,11 +71,17 @@ func main() {
 	var actualPartitionCount int
 
 	fmt.Println("Actives:")
+	if len(nodeActiveCount) == 0 {
+		fmt.Printf("\tN/A\n")
+	}
 	for k, v := range nodeActiveCount {
 		fmt.Printf("\t%s : %d\n", nodeDefsKnown[k], v)
 		actualPartitionCount += v
 	}
 	fmt.Println("Replicas:")
+	if len(nodeReplicaCount) == 0 {
+		fmt.Printf("\tN/A\n")
+	}
 	for k, v := range nodeReplicaCount {
 		fmt.Printf("\t%s : %d\n", nodeDefsKnown[k], v)
 		actualPartitionCount += v
