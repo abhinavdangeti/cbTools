@@ -39,6 +39,11 @@ func main() {
 
 	nodeDefsKnown := map[string]string{}
 
+	if payload.NodeDefsKnown == nil {
+		fmt.Println("no node defs in system")
+		return
+	}
+
 	for k, v := range payload.NodeDefsKnown.NodeDefs {
 		nodeDefsKnown[k] = v.HostPort
 	}
@@ -49,21 +54,23 @@ func main() {
 	indexActiveCount := map[string]map[string]int{}
 	indexReplicaCount := map[string]map[string]int{}
 
-	for _, v := range payload.PlanPIndexes.PlanPIndexes {
-		if _, exists := indexActiveCount[v.IndexName]; !exists {
-			indexActiveCount[v.IndexName] = make(map[string]int)
-		}
-		if _, exists := indexReplicaCount[v.IndexName]; !exists {
-			indexReplicaCount[v.IndexName] = make(map[string]int)
-		}
+	if payload.PlanPIndexes != nil {
+		for _, v := range payload.PlanPIndexes.PlanPIndexes {
+			if _, exists := indexActiveCount[v.IndexName]; !exists {
+				indexActiveCount[v.IndexName] = make(map[string]int)
+			}
+			if _, exists := indexReplicaCount[v.IndexName]; !exists {
+				indexReplicaCount[v.IndexName] = make(map[string]int)
+			}
 
-		for k1, v1 := range v.Nodes {
-			if v1.Priority == 0 {
-				nodeActiveCount[k1]++
-				indexActiveCount[v.IndexName][k1]++
-			} else {
-				nodeReplicaCount[k1]++
-				indexReplicaCount[v.IndexName][k1]++
+			for k1, v1 := range v.Nodes {
+				if v1.Priority == 0 {
+					nodeActiveCount[k1]++
+					indexActiveCount[v.IndexName][k1]++
+				} else {
+					nodeReplicaCount[k1]++
+					indexReplicaCount[v.IndexName][k1]++
+				}
 			}
 		}
 	}
